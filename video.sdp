@@ -1,0 +1,4 @@
+c=IN IP4 127.0.01
+m=video 20002 RTP/AVP 101
+a=rtpmap:101 H264/90000
+a=ftmp:101 packetization-mode=0
