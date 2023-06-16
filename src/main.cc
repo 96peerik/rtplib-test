@@ -25,6 +25,9 @@ int main() {
   video_config.payload_type = 101;
   video_config.ssrc = 1111;
   video_config.clock_rate = 90000;
+  video_config.rtcp_mux = true;
+  video_config.src_port_rtcp = 20001;
+  video_config.dst_port_rtcp = 20003;
 
   RtpStreamConfig audio_config;
   audio_config.dst_address = "127.0.0.1";
@@ -33,6 +36,9 @@ int main() {
   audio_config.payload_type = 102;
   audio_config.ssrc = 2222;
   audio_config.clock_rate = 48000;
+  audio_config.rtcp_mux = true;
+  audio_config.src_port_rtcp = 20011;
+  audio_config.dst_port_rtcp = 20013;
 
   const std::shared_ptr<RtpStream> rtp_stream_video = std::make_shared<RtpStream>(video_config);
   const std::shared_ptr<RtpStream> rtp_stream_audio = std::make_shared<RtpStream>(audio_config);
@@ -48,6 +54,7 @@ int main() {
       .count();
     const auto diff = now - last_frame_ts;
     last_frame_ts = now;
+    std::cout << "dfiff: " << diff << std::endl;
     if (diff < frame_dur_ms) {
       const auto sleep_time = frame_dur_ms - diff;
       std::cout << "diff: " << diff << " sleeping: " << sleep_time << std::endl;

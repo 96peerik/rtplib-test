@@ -78,7 +78,7 @@ class FFmpegEncoder {
     av_opt_set(video_codec_ctx->priv_data, "profile", "baseline", 0);
     av_opt_set(video_codec_ctx->priv_data, "preset", "ultrafast", 0);
     av_opt_set(video_codec_ctx->priv_data, "tune", "zerolatency", 0);
-    av_opt_set(video_codec_ctx->priv_data, "x264opts", "bitrate=60000:aud=1", 0);
+    av_opt_set(video_codec_ctx->priv_data, "x264opts", "bitrate=6000:aud=1", 0);
     
     ck(avcodec_open2(video_codec_ctx, video_codec, NULL));
   }
