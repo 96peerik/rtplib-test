@@ -10,6 +10,14 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/out)
 
 set(EXTERNAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external)
 
+include(FetchContent)
+FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
+                         GIT_TAG 0817715923c9705e68994eb52ef9df3f6845beba) # The commit hash for 1.10.x. Replace with the latest from: https://github.com/libcpr/cpr/releases
+FetchContent_MakeAvailable(cpr)
+
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
+FetchContent_MakeAvailable(json)
+
 # config IDE ext 
 include(CTest)
 enable_testing()
@@ -46,6 +54,7 @@ add_executable(${PROJECT_NAME}
   src/testing/ffmpeg-reader.h
   src/testing/opus-encoder.h
 )
+
 target_link_libraries(${PROJECT_NAME}
   PRIVATE 
   rtplib
@@ -56,10 +65,13 @@ target_link_libraries(${PROJECT_NAME}
   libswresample
   libswscale
   opus
+  cpr::cpr
+  nlohmann_json::nlohmann_json
 )
 
 target_include_directories(${PROJECT_NAME}
   SYSTEM PRIVATE
+  cpr::cpr
   
   ${EXTERNAL_DIR}/FFmpeg/include
   ${EXTERNAL_DIR}/opus-1.4/include

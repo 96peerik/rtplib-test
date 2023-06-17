@@ -11,14 +11,12 @@
 #include "testing/ffmpeg-reader.h"
 #include "testing/ffmpeg-encoder.h"
 #include "testing/opus-encoder.h"
+#include <cpr/cpr.h>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
-int main() {
-  uint32_t ts = 0;
-  const auto frame_dur = 90000 / 25;
-  const auto frame_dur_ms = 1000 / 25;
-
-  const RtpSession rtp_session;
-  RtpStreamConfig video_config;
+int main(int argc, char** argv) {
+    RtpStreamConfig video_config;
   video_config.dst_address = "127.0.0.1";
   video_config.dst_port = 20002;
   video_config.src_port = 20000;
@@ -40,6 +38,40 @@ int main() {
   audio_config.src_port_rtcp = 20011;
   audio_config.dst_port_rtcp = 20013;
 
+  if (argc > 0) {
+    if (true) {
+
+      std::string id = "channel1";
+      std::string url = "http://localhost:4300/_data/sesame-streams/callcenter." + id;
+      cpr::Response r = cpr::Get(cpr::Url{url});
+      r.status_code;                  // 200
+      r.header["content-type"];       // application/json; charset=utf-8
+      std::cout << "response: " << r.text << std::endl;                         // JSON text string
+      json ex1 = json::parse(r.text);
+      const auto ch_id = ex1["id"].get<std::string>();
+      const auto connection = ex1["connection"];
+      const auto video = ex1["video"];
+      const auto audio = ex1["audio"];
+      video_config.dst_address = connection["host"].get<std::string>();
+      video_config.dst_port = connection["videoPortDest"].get<uint16_t>();
+      video_config.src_port = connection["videoPortSrc"].get<uint16_t>();
+      video_config.payload_type = stoi(video["payloadType"].get<std::string>());
+      video_config.ssrc = stoi(video["id"].get<std::string>());
+      video_config.rtcp_mux = true;
+
+      audio_config.dst_address = connection["host"].get<std::string>();
+      audio_config.dst_port = connection["audioPortDest"].get<uint16_t>();
+      audio_config.src_port = connection["audioPortSrc"].get<uint16_t>();
+      audio_config.payload_type = stoi(audio["payloadType"].get<std::string>());
+      audio_config.ssrc = stoi(audio["id"].get<std::string>());
+      audio_config.rtcp_mux = true;
+    }
+  }
+  uint32_t ts = 0;
+  const auto frame_dur = 90000 / 25;
+  const auto frame_dur_ms = 1000 / 25;
+
+  const RtpSession rtp_session;
   const std::shared_ptr<RtpStream> rtp_stream_video = std::make_shared<RtpStream>(video_config);
   const std::shared_ptr<RtpStream> rtp_stream_audio = std::make_shared<RtpStream>(audio_config);
 
