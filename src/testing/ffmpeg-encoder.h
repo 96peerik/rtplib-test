@@ -61,8 +61,8 @@ class FFmpegEncoder {
 
     pkt = av_packet_alloc();
 
-    video_codec_ctx->width = 1920;
-    video_codec_ctx->height = 1080;
+    video_codec_ctx->width = 1024;
+    video_codec_ctx->height = 576;
 
     video_codec_ctx->time_base.num = 1;
     video_codec_ctx->time_base.den = 90000;
@@ -70,15 +70,16 @@ class FFmpegEncoder {
     video_codec_ctx->framerate.num = 25;
     video_codec_ctx->framerate.den = 1;
 
-    video_codec_ctx->gop_size = 10;
-    video_codec_ctx->level = 50;
+    video_codec_ctx->gop_size = 25;
+    video_codec_ctx->level = 31;
+    video_codec_ctx->max_b_frames = 0;
+    video_codec_ctx->profile = FF_PROFILE_H264_BASELINE;
     video_codec_ctx->pix_fmt = AV_PIX_FMT_YUV420P;
 
-    av_opt_set(video_codec_ctx->priv_data, "profile", "baseline", 0);
+//    av_opt_set(video_codec_ctx->priv_data, "profile", "baseline", 0);
     av_opt_set(video_codec_ctx->priv_data, "preset", "ultrafast", 0);
     av_opt_set(video_codec_ctx->priv_data, "tune", "zerolatency", 0);
-    av_opt_set(video_codec_ctx->priv_data, "x264opts", "bitrate=3000", 0);
-    av_opt_set(video_codec_ctx->priv_data, "level", "31", 0);
+    av_opt_set(video_codec_ctx->priv_data, "x264opts", "bitrate=800:vbv-maxrate=14000:aud=1:level=3.1", 0);
 
     
     ck(avcodec_open2(video_codec_ctx, video_codec, NULL));

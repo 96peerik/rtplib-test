@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
   video_config.payload_type = 101;
   video_config.ssrc = 1111;
   video_config.clock_rate = 90000;
-  video_config.rtcp_mux = true;
+  video_config.rtcp_mux = false;
   video_config.src_port_rtcp = 20001;
   video_config.dst_port_rtcp = 20003;
 
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
   audio_config.payload_type = 102;
   audio_config.ssrc = 2222;
   audio_config.clock_rate = 48000;
-  audio_config.rtcp_mux = true;
+  audio_config.rtcp_mux = false;
   audio_config.src_port_rtcp = 20011;
   audio_config.dst_port_rtcp = 20013;
 
